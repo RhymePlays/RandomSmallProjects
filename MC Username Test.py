@@ -26,7 +26,7 @@ def checkingFunction(name):
 
                 if len(indResponse) == 0:
                     unclaimedNames.append(susName)
-                    print("Found Name" + susName)
+                    print("Found Name: " + susName)
         else:
             currentNames.clear()
             currentNames.append(name)
@@ -35,7 +35,7 @@ def checkingFunction(name):
         currentNames.append(name)
 
     totalChecked = totalChecked + 1
-    print("Total Checked" + str(totalChecked))
+    print("Total Checked: " + str(totalChecked))
 
 for firstChar in possibleChars:
     for secondChar in possibleChars:
