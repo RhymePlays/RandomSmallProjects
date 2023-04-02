@@ -1,4 +1,11 @@
-import requests, time, json
+import requests, time, json, threading
+
+# Variables
+IPQueueList = []
+
+# Parameters
+reqTimeout = 0.5
+numberOfThreads = 5
 
 def testIP(ip, timeout):
     try:
@@ -7,16 +14,31 @@ def testIP(ip, timeout):
     except Exception as e:
         return {"ip": ip, "code": e.__class__.__name__, "timeout": timeout, "time": time.time()}
 
+def scannerThread(queueListIndex):
+    for ip in IPQueueList[queueListIndex]:
+        returnValue = testIP(ip, reqTimeout)
+
+        with open("file.log", "a") as f: f.write("\n"+json.dumps(returnValue)+",")        
+        print(returnValue)
+
 def start():
-    ipList = []
+    # Create Queues 
+    for i in range(0, numberOfThreads):
+        IPQueueList.append([])
 
-    for i3 in range(0, 11):
-        for i4 in range(0, 256):
-            returnValue = testIP(f"http://10.10.{i3}.{i4}", 0.5)
-            ipList.append(returnValue)
+    # Populate Queues
+    toWhichQueue=0
+    for i1 in range(10, 11):
+        for i2 in range(10, 11):
+            for i3 in range(10, 11):
+                for i4 in range(0, 256):
+                    IPQueueList[toWhichQueue].append(f"http://{i1}.{i2}.{i3}.{i4}")
 
-            print(returnValue)
+                    if toWhichQueue >= numberOfThreads - 1: toWhichQueue = 0
+                    else: toWhichQueue = toWhichQueue + 1
 
-    with open("file.log", "a") as f:
-        f.write("\n\n\n"+json.dumps(ipList))
+    # Start Threads
+    for i in range(0, numberOfThreads):
+        thread = threading.Thread(target=scannerThread, args=(i,))
+        thread.start()
 start()
