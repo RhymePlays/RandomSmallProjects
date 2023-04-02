@@ -39,7 +39,7 @@ def start():
         for i2 in i2List:
             for i3 in i3List:
                 for i4 in i4List:
-                    IPQueueList[toWhichQueue].append(f"http://{i1}.{i2}.{i3}.{i4}:8080")
+                    IPQueueList[toWhichQueue].append(f"http://{i1}.{i2}.{i3}.{i4}")
 
                     if toWhichQueue >= numberOfThreads - 1: toWhichQueue = 0
                     else: toWhichQueue = toWhichQueue + 1
