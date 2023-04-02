@@ -1,0 +1,27 @@
+from random import randint
+
+
+babies = []
+matchedBabies = []
+
+
+def createBaby(target):
+    iteration = 0
+    while iteration < target:
+        babies.append(randint(1, 365))
+        iteration = iteration+1
+
+
+def findCommonBirthdays():
+    for sampleBaby in babies:
+        matchCount = 0
+        for baby in babies:
+            if sampleBaby == baby:
+                matchCount = matchCount + 1
+        if (matchCount > 1) and (sampleBaby not in matchedBabies):
+            matchedBabies.append(sampleBaby)
+
+
+createBaby(26) #26 = Roughly 50% chance of a common birthday
+findCommonBirthdays()
+print(f"All Birthdays: {babies}\n\nCommon Birthdays: {matchedBabies}")
