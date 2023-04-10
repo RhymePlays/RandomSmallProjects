@@ -5,13 +5,14 @@ IPQueueList = []
 
 # Parameters
 reqTimeout = 0.5
-numberOfThreads = 10
-logFileDirectory = "PingedIP.log"
+numberOfThreads = 100000
+logFileDirectory = "rhymePing.log"
 
 i1List = range(10, 11)
 i2List = range(10, 11)
-i3List = range(10, 11)
+i3List = range(0, 256)
 i4List = range(0, 256)
+portList = range(80, 81)
 
 # Functions
 def testIP(ip, timeout):
@@ -25,7 +26,8 @@ def scannerThread(queueListIndex):
     for ip in IPQueueList[queueListIndex]:
         returnValue = testIP(ip, reqTimeout)
 
-        with open(logFileDirectory, "a") as f: f.write("\n"+json.dumps(returnValue)+",")        
+        if (returnValue["code"] != "ConnectTimeout"):
+            with open(logFileDirectory, "a") as f: f.write("\n"+json.dumps(returnValue)+",")        
         print(returnValue)
 
 def start():
@@ -39,10 +41,11 @@ def start():
         for i2 in i2List:
             for i3 in i3List:
                 for i4 in i4List:
-                    IPQueueList[toWhichQueue].append(f"http://{i1}.{i2}.{i3}.{i4}")
+                    for port in portList:
+                        IPQueueList[toWhichQueue].append(f"http://{i1}.{i2}.{i3}.{i4}:{port}")
 
-                    if toWhichQueue >= numberOfThreads - 1: toWhichQueue = 0
-                    else: toWhichQueue = toWhichQueue + 1
+                        if toWhichQueue >= numberOfThreads - 1: toWhichQueue = 0
+                        else: toWhichQueue = toWhichQueue + 1
 
     # Start Threads
     for i in range(0, numberOfThreads):
